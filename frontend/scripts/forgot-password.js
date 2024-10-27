@@ -111,7 +111,9 @@ document.getElementById('forgot-password-form').addEventListener('submit', async
                         title: 'Success',
                         text: 'Password has been changed successfully!',
                     })
-                    window.location.href = 'login.html'; // Redirect to login page
+                    setTimeout(function(){
+                        window.location.href = 'login.html';  // Redirect to dashboard
+                    }, 3000);
                 } else {
                     // alert('Error occurred while trying to reset password.');
                     Swal.fire({

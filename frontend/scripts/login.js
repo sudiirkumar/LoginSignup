@@ -46,7 +46,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 title: 'Welcome back!',
                 text: `Welcome back, ${name}!`,
             })
-            window.location.href = 'dashboard.html';  // Redirect to dashboard
+            //wait for 2 seconds
+            setTimeout(function(){
+                window.location.href = 'dashboard.html';  // Redirect to dashboard
+            }, 3000);
         } else {
             // alert('Invalid username or password. Please try again.');
             Swal.fire({

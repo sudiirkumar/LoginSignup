@@ -107,7 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: 'Signup Successful',
                     text: `Welcome ${name}!`,
                 })
-                window.location.href = 'login.html';  // Redirect to dashboard
+                setTimeout(function(){
+                    window.location.href = 'login.html';  // Redirect to dashboard
+                }, 3000); // Redirect to dashboard
             } else {
                 // alert('Failed to signup. Please try again.');
                 Swal.fire({
