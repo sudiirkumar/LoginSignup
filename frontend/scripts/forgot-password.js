@@ -37,11 +37,21 @@ document.getElementById('verifyButton').addEventListener('click', async function
             document.getElementById('new-password-section').style.display = 'block'; // Show new password fields
             document.getElementById('userNameLabel').innerText = `Welcome, ${username}!`; // Display user name
         } else {
-            alert('Incorrect credentials!');
+            // alert('Incorrect credentials!');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Incorrect credentials!',
+            })
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while trying to log in.');
+        // alert('An error occurred while trying to log in.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'An error occurred while trying to log in.',
+        })
     }
 });
 
@@ -72,7 +82,12 @@ document.getElementById('forgot-password-form').addEventListener('submit', async
     var validPassword = (/[0-9a-zA-Z!@#$%^&*(),.?":{}|<>]/.test(newPassword)) && (newPassword.length>=8);
     // Validate the new password
     if(!validPassword){
-        alert("Password criteria does not match");
+        // alert("Password criteria does not match");
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Password criteria does not match',
+        })
         return;
     }
     if (newPassword && confirmPassword) {
@@ -90,19 +105,44 @@ document.getElementById('forgot-password-form').addEventListener('submit', async
                 });
                 
                 if (response.ok) {
-                    alert('Password has been changed successfully!'); 
+                    // alert('Password has been changed successfully!'); 
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Password has been changed successfully!',
+                    })
                     window.location.href = 'login.html'; // Redirect to login page
                 } else {
-                    alert('Error occurred while trying to reset password.');
+                    // alert('Error occurred while trying to reset password.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Error occurred while trying to reset password.',
+                    })
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while trying to reset password.');
+                // alert('An error occurred while trying to reset password.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred while trying to reset password.',
+                })
             }
         } else {
-            alert('New passwords do not match. Please try again.');
+            // alert('New passwords do not match. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'New passwords do not match. Please try again.',
+            })
         }
     } else {
-        alert('Please fill in all fields correctly.');
+        // alert('Please fill in all fields correctly.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please fill in all fields correctly.',
+        })
     }
 });

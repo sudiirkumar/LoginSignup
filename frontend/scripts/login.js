@@ -40,14 +40,29 @@ document.addEventListener("DOMContentLoaded", function() {
         const name = result.name;
         if (response.ok) {
             // console.log(`Response is: ${(result.name)}`);
-            alert(`Welcome back, ${name}!`);
+            // alert(`Welcome back, ${name}!`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Welcome back!',
+                text: `Welcome back, ${name}!`,
+            })
             window.location.href = 'dashboard.html';  // Redirect to dashboard
         } else {
-            alert('Invalid username or password. Please try again.');
+            // alert('Invalid username or password. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Invalid username or password. Please try again.',
+            })
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while trying to log in.');
+        // alert('An error occurred while trying to log in.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'An error occurred while trying to log in.',
+        })
     }
 }
 
@@ -82,7 +97,12 @@ document.addEventListener("DOMContentLoaded", function() {
             passwordInput.value = storedPassword;
             login();
         } else {
-            alert('No saved login details found.');
+            // alert('No saved login details found.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'No saved login details found.',
+            })
             
         }
     });
