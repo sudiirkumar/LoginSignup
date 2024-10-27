@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuthPanel - Login</title>
+    <link rel="stylesheet" href="../frontend/styles/styles.css">
+    <script src="../frontend/scripts/login.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Login to AuthPanel</h2>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Username or Email" autocomplete="off" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <div class="checkbox-container">
+                <input type="checkbox" id="remember-me" class="checkbox">
+                <label for="remember-me" class="check-label">Remember me</label>
+            </div>
+            <button type="submit" class="button">Login</button>
+        </form>
+        <div id="saved-login-prompt" style="display: none;">
+            <p>We found saved login details. Would you like to use them or login with another account?</p>
+            <button id="use-saved-account" class="button">Use Saved Account</button>
+            <button id="use-other-account" class="button button-green">Login with Another Account</button>
+        </div>
+        <p class="p1">Don't have an account? <a href="signup.html">Sign Up</a></p>
+        <p><a href="forgot-password.html">Forgot Password?</a></p>
+    </div>
+</body>
+</html>
