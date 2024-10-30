@@ -13,10 +13,6 @@ app.config['MYSQL_DB'] = 'authpanel'  # Your database name
 
 mysql = MySQL(app)
 
-@app.route('/')
-def home():
-    return "Welcome to the Flask app!"  # Simple home route
-
 @app.route('/login', methods=['POST'])
 def login():
     username_or_email = request.json.get('username_or_email')
