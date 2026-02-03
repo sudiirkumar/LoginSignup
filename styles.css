@@ -8,7 +8,7 @@
 
 body {
     /* background: linear-gradient(135deg, #f0f4ff, #d1e7ff); */
-    background-image: url("../assests/body-bg.jpg");
+    background-image: url("./body-bg.jpg");
     display: flex;
     justify-content: center;
     align-items: center;
