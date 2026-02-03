@@ -63,4 +63,4 @@ jobs:
         with:
           app-name: 'AuthPanel'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_66D95FCA527141EA8D60F7C209EF7DAA }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A0BCA52BCA064E19BBB14A705E9438CA }}
