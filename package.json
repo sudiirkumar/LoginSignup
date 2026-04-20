@@ -1,0 +1,25 @@
+{
+  "name": "login-signup-server",
+  "version": "1.0.0",
+  "description": "Node.js backend for login/signup authentication with MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "authentication",
+    "login",
+    "signup"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  }
+}
