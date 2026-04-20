@@ -1,86 +1,115 @@
 from flask import Flask, request, jsonify
-from flask_mysqldb import MySQL
-from flask_cors import CORS  # Import CORS
+from flask_pymongo import PyMongo
+from flask_cors import CORS
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
-# MySQL Configuration
-app.config['MYSQL_HOST'] = 'localhost'  # Update with your MySQL host
-app.config['MYSQL_USER'] = 'root'  # Your MySQL username
-app.config['MYSQL_PASSWORD'] = '&udhir2Kum#r'  # Your MySQL password
-app.config['MYSQL_DB'] = 'authpanel'  # Your database name
+# MongoDB Configuration
+mongo_uri = os.getenv("MONGO_URI")
+if not mongo_uri:
+    raise ValueError("MONGO_URI is not set. Add it to your .env file.")
 
-mysql = MySQL(app)
+app.config["MONGO_URI"] = mongo_uri
+mongo = PyMongo(app)
+
+@app.route('/home')
+def home():
+    return "Welcome to the Authentication Panel API (MongoDB)!"
 
 @app.route('/login', methods=['POST'])
 def login():
-    username_or_email = request.json.get('username_or_email')
-    password = request.json.get('password')
-    if not username_or_email or not password:  # Check for missing credentials
+    data = request.get_json()
+    username_or_email = data.get('username_or_email')
+    password = data.get('password')
+
+    if not username_or_email or not password:
         return jsonify({'message': 'Email/Username and password are required!'}), 400
 
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT name FROM users WHERE (email=%s OR username=%s) AND password=%s", (username_or_email, username_or_email, password))
-    user = cur.fetchone()
-    cur.close()
+    users = mongo.db.users
+    # Check against both email and username
+    user = users.find_one({
+        "$or": [{"email": username_or_email}, {"username": username_or_email}],
+        "password": password
+    })
+
     if user:
-        a = jsonify({'message': 'Login successful!', 'name': user})
-        return a, 200
-    else:
-        return jsonify({'message': 'Invalid credentials!'}), 401
+        return jsonify({'message': 'Login successful!', 'name': user.get('name')}), 200
+    
+    return jsonify({'message': 'Invalid credentials!'}), 401
 
 @app.route('/register', methods=['POST'])
 def register():
-    email = request.json.get('email')
-    password = request.json.get('password')
-    name = request.json.get('name')
-    username = request.json.get('username')
-    security_question = request.json.get('security_question')
-    security_answer = request.json.get('security_answer')
-        
-    if not email or not password or not name or not username or not security_question or not security_answer:
+    data = request.get_json()
+    
+    required_fields = ['email', 'password', 'name', 'username', 'security_question', 'security_answer']
+    if not all(k in data for k in required_fields):
         return jsonify({'message': 'All fields are required!'}), 400
+        
+    users = mongo.db.users
+
+    # Check if user already exists
+    if users.find_one({"$or": [{"email": data['email']}, {"username": data['username']}]}):
+        return jsonify({'message': 'User already exists!'}), 409
+
     try:
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO users(email,password,name,username,security_question,security_answer) VALUES(%s,%s,%s,%s,%s,%s)", (email, password, name, username, security_question, security_answer))
-        print("User registered successfully!")
-        mysql.connection.commit()
+        users.insert_one({
+            "email": data['email'],
+            "password": data['password'], # Note: You should hash passwords in a real app!
+            "name": data['name'],
+            "username": data['username'],
+            "security_question": data['security_question'],
+            "security_answer": data['security_answer']
+        })
         return jsonify({'message': 'User registered successfully!'}), 201
     except Exception as e:
-        mysql.connection.rollback()
-        print(e)
-        return jsonify({f'message': 'Error: User could not be registered.'}), 500
-    finally:
-        cur.close()
+        return jsonify({'message': f'Error: {str(e)}'}), 500
 
 @app.route('/validate', methods=['POST'])
 def validate():
-    username_or_email = request.json.get('username_or_email')
-    security_question = request.json.get('security_question')
-    security_answer = request.json.get('security_answer')
+    data = request.get_json()
+    username_or_email = data.get('username_or_email')
+    security_question = data.get('security_question')
+    security_answer = data.get('security_answer')
     
     if not username_or_email or not security_question or not security_answer:
-        return jsonify({'message':'All fields are required!'}), 400
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT username FROM users WHERE (email = %s OR username = %s) AND security_question = %s AND security_answer = %s",(username_or_email, username_or_email, security_question, security_answer))
-    user = cur.fetchone()
-    cur.close()
-    if user:
-        return jsonify({'message':'Account found','username':user}), 200
-    else:
-        return jsonify({'message': 'Invalid credentials!'}), 401
+        return jsonify({'message': 'All fields are required!'}), 400
+
+    users = mongo.db.users
+    user = users.find_one({
+        "$or": [{"email": username_or_email}, {"username": username_or_email}],
+        "security_question": security_question,
+        "security_answer": security_answer
+    })
     
+    if user:
+        return jsonify({'message': 'Account found', 'username': user.get('username')}), 200
+        
+    return jsonify({'message': 'Invalid credentials!'}), 401
+
 @app.route('/reset', methods=['POST'])
 def reset():
-    password = request.json.get('password')
-    username = request.json.get('username')
-    if not password:
-        return jsonify({'message':'All fields are required!'}), 400
-    cur = mysql.connection.cursor()
-    cur.execute("UPDATE users SET password = %s WHERE username = %s",(password, username))
-    mysql.connection.commit()
-    cur.close()
-    return jsonify({'message':'Password reset successfully!'}), 200
+    data = request.get_json()
+    password = data.get('password')
+    username = data.get('username')
+    
+    if not password or not username:
+        return jsonify({'message': 'All fields are required!'}), 400
+        
+    users = mongo.db.users
+    result = users.update_one(
+        {"username": username},
+        {"$set": {"password": password}}
+    )
+    
+    if result.modified_count > 0:
+        return jsonify({'message': 'Password reset successfully!'}), 200
+    
+    return jsonify({'message': 'User not found or password unchanged.'}), 404
+
 if __name__ == '__main__':
     app.run(debug=True)
