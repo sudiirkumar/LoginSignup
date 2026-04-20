@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             return;
         }
-        fetch('https://backend-rohit-agdxemhba6arh0cd.centralindia-01.azurewebsites.net/register', {  // Adjust URL if needed
+        fetch('/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

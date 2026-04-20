@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     
     try {
-        const response = await fetch('https://backend-rohit-agdxemhba6arh0cd.centralindia-01.azurewebsites.net/login', {
+        const response = await fetch('/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

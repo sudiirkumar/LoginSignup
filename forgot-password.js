@@ -18,7 +18,7 @@ document.getElementById('verifyButton').addEventListener('click', async function
     const securityAnswer = document.getElementById('securityAnswer').value;
 
     try {
-        const response = await fetch('https://backend-rohit-agdxemhba6arh0cd.centralindia-01.azurewebsites.net/validate', {
+        const response = await fetch('/validate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ document.getElementById('forgot-password-form').addEventListener('submit', async
     if (newPassword && confirmPassword) {
         if (newPassword === confirmPassword) {
             try {
-                const response = await fetch('https://backend-rohit-agdxemhba6arh0cd.centralindia-01.azurewebsites.net/reset', {
+                const response = await fetch('/reset', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
