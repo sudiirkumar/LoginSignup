@@ -3,6 +3,7 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 load_dotenv()
 
@@ -17,6 +18,19 @@ if not mongo_uri:
 app.config["MONGO_URI"] = mongo_uri
 mongo = PyMongo(app)
 
+# Atlas connection strings do not always include a default database. In that
+# case, select one explicitly so mongo.db is not None.
+parsed_mongo_uri = urlparse(mongo_uri)
+mongo_db_name = os.getenv("MONGO_DB_NAME") or parsed_mongo_uri.path.strip("/").split("/")[0]
+if not mongo_db_name:
+    mongo_db_name = "authentication"
+
+database = mongo.cx[mongo_db_name]
+
+
+def users_collection():
+    return database.users
+
 @app.route('/home')
 def home():
     return "Welcome to the Authentication Panel API (MongoDB)!"
@@ -30,7 +44,7 @@ def login():
     if not username_or_email or not password:
         return jsonify({'message': 'Email/Username and password are required!'}), 400
 
-    users = mongo.db.users
+    users = users_collection()
     # Check against both email and username
     user = users.find_one({
         "$or": [{"email": username_or_email}, {"username": username_or_email}],
@@ -50,7 +64,7 @@ def register():
     if not all(k in data for k in required_fields):
         return jsonify({'message': 'All fields are required!'}), 400
         
-    users = mongo.db.users
+    users = users_collection()
 
     # Check if user already exists
     if users.find_one({"$or": [{"email": data['email']}, {"username": data['username']}]}):
@@ -79,7 +93,7 @@ def validate():
     if not username_or_email or not security_question or not security_answer:
         return jsonify({'message': 'All fields are required!'}), 400
 
-    users = mongo.db.users
+    users = users_collection()
     user = users.find_one({
         "$or": [{"email": username_or_email}, {"username": username_or_email}],
         "security_question": security_question,
@@ -100,7 +114,7 @@ def reset():
     if not password or not username:
         return jsonify({'message': 'All fields are required!'}), 400
         
-    users = mongo.db.users
+    users = users_collection()
     result = users.update_one(
         {"username": username},
         {"$set": {"password": password}}
