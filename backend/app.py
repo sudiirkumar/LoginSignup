@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
 from urllib.parse import urlparse
@@ -47,11 +48,10 @@ def login():
     users = users_collection()
     # Check against both email and username
     user = users.find_one({
-        "$or": [{"email": username_or_email}, {"username": username_or_email}],
-        "password": password
+        "$or": [{"email": username_or_email}, {"username": username_or_email}]
     })
 
-    if user:
+    if user and check_password_hash(user['password'], password):
         return jsonify({'message': 'Login successful!', 'name': user.get('name')}), 200
     
     return jsonify({'message': 'Invalid credentials!'}), 401
@@ -73,7 +73,7 @@ def register():
     try:
         users.insert_one({
             "email": data['email'],
-            "password": data['password'], # Note: You should hash passwords in a real app!
+            "password": generate_password_hash(data['password']),
             "name": data['name'],
             "username": data['username'],
             "security_question": data['security_question'],
@@ -117,7 +117,7 @@ def reset():
     users = users_collection()
     result = users.update_one(
         {"username": username},
-        {"$set": {"password": password}}
+        {"$set": {"password": generate_password_hash(password)}}
     )
     
     if result.modified_count > 0:
