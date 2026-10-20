@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             return;
         }
-        fetch('/register', {
+        fetch('https://loginsignup-797r.onrender.com/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

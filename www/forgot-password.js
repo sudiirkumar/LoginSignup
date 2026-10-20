@@ -18,7 +18,7 @@ document.getElementById('verifyButton').addEventListener('click', async function
     const securityAnswer = document.getElementById('securityAnswer').value;
 
     try {
-        const response = await fetch('/validate', {
+        const response = await fetch('https://loginsignup-797r.onrender.com/validate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ document.getElementById('forgot-password-form').addEventListener('submit', async
     if (newPassword && confirmPassword) {
         if (newPassword === confirmPassword) {
             try {
-                const response = await fetch('/reset', {
+                const response = await fetch('https://loginsignup-797r.onrender.com/reset', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
