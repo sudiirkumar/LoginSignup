@@ -1,25 +1,27 @@
 {
-  "name": "login-signup-server",
+  "name": "loginsignup",
   "version": "1.0.0",
-  "description": "Node.js backend for login/signup authentication with MongoDB",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "express",
-    "mongodb",
-    "authentication",
-    "login",
-    "signup"
-  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sudiirkumar/LoginSignup.git"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sudiirkumar/LoginSignup/issues"
+  },
+  "homepage": "https://github.com/sudiirkumar/LoginSignup#readme",
+  "description": "",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.2",
-    "mongoose": "^8.9.5"
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.3"
   }
 }
